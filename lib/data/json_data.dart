@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 Map growingParameterSettingsName = {
   "0": {"name": "CONTROL TEMPERATURE SELECTION"},
   "1": {"name": "CONTROL HUMIDITY SELECTION"},
@@ -74,6 +76,9 @@ Map growingParameterSettingsName = {
   "72": {"name": "WRONG FEEDBACK ALARM ON DIFFERENCE(%)"},
   "73": {"name": "COMPOST DIFFERENCE FAN INCREASE(C)"},
 };
+
+final validGrowingMapName = json
+    .decode(json.encode(growingParameterSettingsName)) as Map<String, dynamic>;
 
 Map tunnelParameterSettingsName = {
   "0": {"name": "CONTROL TEMPERATURE SELECTION"},

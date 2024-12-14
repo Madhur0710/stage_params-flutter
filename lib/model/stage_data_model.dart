@@ -1,35 +1,28 @@
 import 'stage_model.dart';
 
 class StageDataModel {
-  final String id;
-  final StageModel stage;
+  List<StageModel> stageModel;
 
   StageDataModel({
-    required this.id,
-    required this.stage,
+    required this.stageModel,
   });
 
-  factory StageDataModel.fromJson(Map<String, dynamic> json , Map<String, dynamic> nameData) {
-    if (json.keys.length != 1) {
-      throw ArgumentError('Expected JSON to contain exactly one stage, but got multiple.');
+  factory StageDataModel.fromJson(
+      Map<String, dynamic> json, Map<String, dynamic> nameData) {
+    List<StageModel> temp = [];
+
+    if (json["state"] != null && json["state"]["reported"] != null) {
+      var reported = json["state"]["reported"];
+      reported.forEach((key, value) {
+        temp.add(StageModel.fromJson(key, value, nameData));
+      });
+    } else {
+      print("Invalid JSON structure");
     }
-
-    var stageId = json.keys.first;
-    var stageData = json[stageId];
-
-    if (stageData is! Map<String, dynamic>) {
-      throw ArgumentError('Stage data must be a map, but got ${stageData.runtimeType}.');
-    }
-
-    return StageDataModel(
-      id: stageId,
-      stage: StageModel.fromJson(stageId, stageData, nameData), 
-    );
+    return StageDataModel(stageModel: temp);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      id: stage.toJson(), 
-    };
+    return {};
   }
 }

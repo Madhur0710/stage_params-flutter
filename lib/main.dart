@@ -1,8 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:stage_params/data/json_data.dart';
+import 'package:stage_params/data/sample_stage_data.dart';
+import 'package:stage_params/model/params_model.dart';
+import 'package:stage_params/model/stage_data_model.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+late StageDataModel stageDataModel;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -56,15 +65,43 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  List<Widget> params = [];
 
-  void _incrementCounter() {
+  @override
+  initState() {
+    super.initState();
+    initprivate();
+  }
+
+  void initprivate() {
+    Map<String, dynamic> nameData = validGrowingMapName;
+    Map<String, dynamic> jsonData = validStageMap;
+    print(jsonData);
+    print(nameData);
+    stageDataModel = StageDataModel.fromJson(jsonData, nameData);
+    makeListWidget();
+  }
+
+  void makeListWidget() {
+    params = stageDataModel.stageModel[_counter].params.map((e) {
+      return Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(e.name),
+            Text(e.id),
+            Text(e.value.toString()),
+            Text(e.visibility.toString())
+          ],
+        ),
+      );
+    }).toList();
+  }
+
+  void _incrementCounter(bool temp) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      temp ? _counter++ : _counter--;
+      makeListWidget();
     });
   }
 
@@ -86,40 +123,27 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+      body: Column(
+        children: [
+          Center(
+            child: Text(stageDataModel.stageModel[_counter].name),
+          ),
+          ...params
+        ],
+      ),
+      floatingActionButton: Container(
+        width: 200,
+        child: Row(
+          children: [
+            IconButton(
+                onPressed: () => {_incrementCounter(true)},
+                icon: Icon(Icons.add)),
+            IconButton(
+                onPressed: () => {_incrementCounter(false)},
+                icon: Icon(Icons.remove))
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

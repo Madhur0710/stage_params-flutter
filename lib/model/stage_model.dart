@@ -1,9 +1,9 @@
 import 'params_model.dart';
 
 class StageModel {
-  final String id; 
-  final String name; 
-  final List<StageParameterSettingModel> params; 
+  final String id;
+  final String name;
+  final List<StageParameterSettingModel> params;
 
   StageModel({
     required this.id,
@@ -11,13 +11,15 @@ class StageModel {
     required this.params,
   });
 
-  factory StageModel.fromJson(String id, Map<String, dynamic> json, Map<String, dynamic> nameData) {
-    String stageName = nameData[id]?['name'];
+  factory StageModel.fromJson(
+      String id, Map<String, dynamic> json, Map<String, dynamic> nameData) {
+    String stageName = "Stage : " + id;
 
     List<StageParameterSettingModel> parameters = [];
     if (json['params'] != null) {
       json['params'].forEach((paramId, paramDetails) {
-        parameters.add(StageParameterSettingModel.fromJson(paramId, paramDetails, nameData));
+        parameters.add(StageParameterSettingModel.fromJson(
+            paramId, paramDetails, nameData));
       });
     }
 
